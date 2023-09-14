@@ -1,5 +1,5 @@
 {
-    "name": "@master/eslint",
+    "name": "@master/eslint-plugin",
     "scripts": {
         "build": "techor pack",
         "dev": "pnpm run build --watch --no-declare",
@@ -18,7 +18,7 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/master-co/css.git",
-        "directory": "packages/eslint"
+        "directory": "packages/eslint-plugin"
     },
     "sideEffects": false,
     "main": "./dist/index.js",
