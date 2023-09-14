@@ -1,0 +1,37 @@
+{
+    "name": "@master/eslint",
+    "scripts": {
+        "build": "techor pack",
+        "dev": "pnpm run build --watch --no-declare",
+        "type-check": "tsc --noEmit",
+        "lint": "eslint src",
+        "test": "jest"
+    },
+    "license": "MIT",
+    "description": "Integrate Master CSS in React way",
+    "author": "Aoyue Design LLC.",
+    "funding": "https://docs.master.co/css/donate",
+    "homepage": "https://css.master.co",
+    "bugs": {
+        "url": "https://github.com/master-co/css/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/master-co/css.git",
+        "directory": "packages/eslint"
+    },
+    "sideEffects": false,
+    "main": "./dist/index.js",
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "dependencies": {
+        "@master/css": "workspace:^"
+    },
+    "devDependencies": {
+        "@types/node": "^20.6.0"
+    }
+}
