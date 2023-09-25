@@ -1,14 +1,10 @@
 {
     "name": "@master/eslint-plugin",
     "scripts": {
-        "build": "techor pack",
-        "dev": "pnpm run build --watch --no-declare",
-        "type-check": "tsc --noEmit",
-        "lint": "eslint src",
-        "test": "jest"
+        "test": "mocha tests --recursive"
     },
     "license": "MIT",
-    "description": "Integrate Master CSS in React way",
+    "description": "Master CSS ESLint Plugin",
     "author": "Aoyue Design LLC.",
     "funding": "https://docs.master.co/css/donate",
     "homepage": "https://css.master.co",
@@ -21,17 +17,18 @@
         "directory": "packages/eslint-plugin"
     },
     "sideEffects": false,
-    "main": "./dist/index.js",
-    "files": [
-        "dist"
-    ],
+    "main": "./lib/index.js",
+    "exports": "./lib/index.js",
     "publishConfig": {
         "access": "public"
     },
     "dependencies": {
-        "@master/css": "workspace:^"
+        "@master/css": "workspace:^",
+        "requireindex": "^1.2.0"
     },
     "devDependencies": {
-        "@types/node": "^20.6.0"
+        "@angular-eslint/template-parser": "^16.2.0",
+        "@types/node": "^20.6.0",
+        "vue-eslint-parser": "^9.3.1"
     }
 }
