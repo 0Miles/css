@@ -10,13 +10,20 @@ import ColorsOverview from '../colors/components/Overview.mdx'
 import FontsOverview from '../fonts/components/Overview.mdx'
 import ClassesOverview from '../classes/components/Overview.mdx'
 
+## Overview [sr-only]
 ```js name=master.css.js
 /** @type {import('@master/css').Config} */
 export default {
     …
 }
 ```
-Configuration fields that are not specified will fall back to [default configuration](https://github.com/master-co/css/tree/beta/packages/css/src/config).
+Configuration fields that are not specified will fall back to Master CSS's [default configuration](https://github.com/master-co/css/tree/beta/packages/css/src/config).
+
+---
+
+## Syntax
+
+import CustomClassesOverview from '../classes/components/Overview.mdx'
 
 ### `.animations`
 Customizing animation [animations](/docs/animations) for your design system.
@@ -24,15 +31,11 @@ Customizing animation [animations](/docs/animations) for your design system.
 
 ### `.classes`
 Customizing abstract [classes](/docs/classes) for your design system.
-<ClassesOverview />
+<CustomClassesOverview />
 
 ### `.colors`
-Customizing [colors](/docs/colors) for your design system.
+Customize [colors](/docs/colors) for your design system.
 <ColorsOverview />
-
-### `.fonts`
-Customizing [fonts](/docs/colors) for your design system.
-<FontsOverview />
 
 ### `.functions`
 Customizing [functions](/docs/functions) for your design system.
