@@ -1,5 +1,5 @@
 import { extend } from '@techor/extend'
-import { Rule, RuleMeta, RuleNative } from './rule'
+import { Rule, RuleConfig, RuleMeta, RuleNative } from './rule'
 import type { Colors, Config, Animations, Values } from './config'
 import { config as defaultConfig } from './config'
 import { rgbToHex } from './utils/rgb-to-hex'
@@ -115,7 +115,7 @@ export class MasterCSS {
         }
         const resolveValues = (values: Values) => {
             if (typeof values === 'function') {
-                return getFlatData(values(this), false)
+                return getFlatData(values.call(this, this.values), false)
             } else {
                 values = getFlatData(values, false)
                 for (const [name, value] of Object.entries(values)) {
@@ -315,21 +315,15 @@ export class MasterCSS {
         }
 
         if (rules) {
-            for (const id in rules) {
-                const eachRuleConfig = rules[id]
-                const { native, values, colored } = eachRuleConfig
-                let match = eachRuleConfig.match
-                eachRuleConfig.id = id
-                eachRuleConfig.native = native === true ? id.replace(/(?!^)[A-Z]/g, m => '-' + m).toLowerCase() : undefined
-                if (values) {
-                    this.values[id] = resolveValues(values)
-                }
-                if (match) {
-                    const valueNames = Object.keys(this.values[id] ?? {})
-                    if (match.includes('$values')) {
-                        match = valueNames.length
-                            ? match.replace(/\$values/, valueNames.join('|'))
-                            : match.replace(/(?:\|)?\$values/, '')
+            Object.entries(rules)
+                .sort((a: any, b: any) => (b[1].order || 0) - (a[1].order || 0))
+                .forEach(([id, eachRuleConfig]: [string, RuleConfig]) => {
+                    const { native, values, colored } = eachRuleConfig
+                    let match = eachRuleConfig.match
+                    eachRuleConfig.id = id
+                    eachRuleConfig.native = native === true ? id.replace(/(?!^)[A-Z]/g, m => '-' + m).toLowerCase() : undefined
+                    if (values) {
+                        this.values[id] = resolveValues(values)
                     }
                     if (match) {
                         const valueNames = Object.keys(this.values[id] ?? {})
