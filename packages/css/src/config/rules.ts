@@ -189,9 +189,7 @@ const defaultRules = {
     fontFamily: {
         match: '^f(?:ont)?:(?:$values)(?!\\|)',
         native: true,
-        values() {
-            return this.fonts
-        }
+        values: ({ fonts }) => fonts
     } as RuleConfig,
     fontSmoothing: {
         match: '^f(?:ont)?:(?:antialiased|subpixel-antialiased|$values)(?!\\|)',
@@ -227,13 +225,13 @@ const defaultRules = {
         match: '^f:.',
         native: true,
         order: -1,
-        values({ fontSize, fontStyle, fontWeight, lineHeight }) {
+        values: ({ fonts, config }) => {
             return {
-                ...fontSize,
-                ...fontStyle,
-                ...fontWeight,
-                ...lineHeight,
-                ...this.fonts
+                ...config.rules.fontSize.values,
+                ...config.rules.fontStyle.values,
+                ...config.rules.fontWeight.values,
+                ...config.rules.lineHeight.values,
+                ...fonts
             }
         }
     } as RuleConfig,
