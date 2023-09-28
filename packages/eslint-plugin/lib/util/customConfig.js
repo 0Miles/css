@@ -2,8 +2,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const resolveConfig = require('tailwindcss/resolveConfig')
-const twLoadConfig = require('tailwindcss/lib/lib/load-config')
+const resolveConfig = {}
 
 const CHECK_REFRESH_RATE = 1_000
 let previousConfig = null
@@ -18,7 +17,7 @@ let lastModifiedDate = null
  */
 function requireUncached(module) {
     delete require.cache[require.resolve(module)]
-    return twLoadConfig.loadConfig(module)
+    return {}
 }
 
 function loadConfig(config) {
