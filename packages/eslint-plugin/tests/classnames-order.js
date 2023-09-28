@@ -68,7 +68,7 @@ const skipClassAttributeOptions = [
 ruleTester.run('classnames-order', rule, {
     valid: [
         {
-            code: `<div class="p:8 m:8 f:24 fg:white bg:black">Simple, basic</div>`,
+            code: `<div class="m:8 p:8 bg:black f:24 fg:white">Simple, basic</div>`,
         }
     ],
     invalid: [],

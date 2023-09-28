@@ -178,7 +178,7 @@ module.exports = {
 
             let orderedClassNames = masterCss.rules
                 .sort((a, b) => a.order - b.order)
-                .map(x => ({ name: x.className, order: x.order }))
+                .map(x => x.className)
 
             console.log(orderedClassNames)
 
