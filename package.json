@@ -22,6 +22,7 @@
         "url": "https://github.com/master-co/css.git"
     },
     "devDependencies": {
+        "@master/eslint-plugin-css": "workspace:^",
         "@master/css-extractor": "workspace:^",
         "@master/css-extractor.vite": "workspace:^",
         "@master/css-renderer": "workspace:^",

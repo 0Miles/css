@@ -1,8 +1,13 @@
 {
-    "name": "@master/eslint-plugin",
+    "name": "@master/eslint-plugin-css",
     "scripts": {
         "test": "mocha tests --recursive"
     },
+    "keywords": [
+        "mastercss",
+        "eslint",
+        "eslintplugin"
+    ],
     "license": "MIT",
     "description": "Master CSS ESLint Plugin",
     "author": "Aoyue Design LLC.",

@@ -17,6 +17,9 @@ importers:
       '@master/css-renderer':
         specifier: workspace:^
         version: link:packages/renderer
+      '@master/eslint-plugin-css':
+        specifier: workspace:^
+        version: link:packages/eslint-plugin
       '@techor/fs':
         specifier: ^2.5.17
         version: 2.5.17

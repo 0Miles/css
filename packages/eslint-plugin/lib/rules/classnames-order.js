@@ -180,8 +180,6 @@ module.exports = {
                 .sort((a, b) => a.order - b.order)
                 .map(x => x.className)
 
-            console.log(orderedClassNames)
-
             if (removeDuplicates) {
                 removeDuplicatesFromClassnamesAndWhitespaces(orderedClassNames, whitespaces, headSpace, tailSpace)
             }
