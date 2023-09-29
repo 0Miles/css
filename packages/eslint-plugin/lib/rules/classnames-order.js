@@ -177,8 +177,10 @@ module.exports = {
             }
 
             let orderedClassNames = masterCss.rules
-                .sort((a, b) => a.order - b.order)
+                .filter(x => classNames.includes(x.className))
                 .map(x => x.className)
+
+            orderedClassNames = orderedClassNames.concat(classNames.filter(x => !orderedClassNames.includes(x)))
 
             if (removeDuplicates) {
                 removeDuplicatesFromClassnamesAndWhitespaces(orderedClassNames, whitespaces, headSpace, tailSpace)
