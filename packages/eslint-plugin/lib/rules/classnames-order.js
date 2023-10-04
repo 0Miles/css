@@ -178,7 +178,7 @@ module.exports = {
 
             orderedClassNames = orderedClassNames.concat(classNames.filter(x => !orderedClassNames.includes(x)))
 
-            removeDuplicatesFromClassnamesAndWhitespaces(orderedClassNames, whitespaces, headSpace, tailSpace);
+            removeDuplicatesFromClassnamesAndWhitespaces(orderedClassNames, whitespaces, headSpace, tailSpace)
 
             // Generates the validated/sorted attribute value
             let validatedClassNamesValue = ''
