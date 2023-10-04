@@ -1,4 +1,5 @@
 'use strict'
+const exploreConfig = require('explore-config').default
 
 function getOption(context, name) {
     // Options (defined at rule level)
@@ -7,19 +8,19 @@ function getOption(context, name) {
         return options[name]
     }
     // Settings (defined at plugin level, shared accross rules)
-    if (context.settings && context.settings.tailwindcss && context.settings.tailwindcss[name] != undefined) {
-        return context.settings.tailwindcss[name]
+    if (context.settings && context.settings.mastercss && context.settings.mastercss[name] != undefined) {
+        return context.settings.mastercss[name]
     }
     // Fallback to defaults
     switch (name) {
         case 'callees':
-            return ['classnames', 'clsx', 'ctl', 'cva', 'tv']
+            return ['classnames', 'clsx', 'ctl', 'cva']
         case 'ignoredKeys':
             return ['compoundVariants', 'defaultVariants']
         case 'classRegex':
             return '^class(Name)?$'
         case 'config':
-            return null
+            return exploreConfig('master.css.*', {})
         case 'cssFiles':
             return ['**/*.css', '!**/node_modules', '!**/.*', '!**/dist', '!**/build']
         case 'cssFilesRefreshRate':

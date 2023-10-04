@@ -1,20 +1,19 @@
 /* eslint-disable no-case-declarations */
 /**
  * @fileoverview Use a consistent orders for the Master CSS classnames, based on property then on variants
- * @author François Massart
+ * @author Miles
  */
 'use strict'
 
+// Modified from https://github.com/francoismassart/eslint-plugin-tailwindcss
+
 const docsUrl = require('../util/docsUrl')
-const customConfig = require('../util/customConfig')
 const astUtil = require('../util/ast')
 const removeDuplicatesFromClassnamesAndWhitespaces = require('../util/removeDuplicatesFromClassnamesAndWhitespaces')
 const getOption = require('../util/settings')
 const parserUtil = require('../util/parser')
 
 const MasterCSS = require('@master/css').MasterCSS
-
-const masterCss = new MasterCSS()
 
 //------------------------------------------------------------------------------
 // Rule Definition
@@ -23,8 +22,6 @@ const masterCss = new MasterCSS()
 // Predefine message for use in context.report conditional.
 // messageId will still be usable in tests.
 const INVALID_CLASSNAMES_ORDER_MSG = 'Invalid Master CSS classnames order'
-
-const contextFallbackCache = new WeakMap()
 
 module.exports = {
     meta: {
@@ -74,11 +71,10 @@ module.exports = {
         const callees = getOption(context, 'callees')
         const skipClassAttribute = getOption(context, 'skipClassAttribute')
         const tags = getOption(context, 'tags')
-        const twConfig = getOption(context, 'config')
+        const masterCssConfig = getOption(context, 'config')
         const classRegex = getOption(context, 'classRegex')
-        const removeDuplicates = getOption(context, 'removeDuplicates')
 
-        const mergedConfig = customConfig.resolve(twConfig)
+        const masterCss = new MasterCSS(masterCssConfig)
 
         //----------------------------------------------------------------------
         // Helpers
@@ -182,9 +178,7 @@ module.exports = {
 
             orderedClassNames = orderedClassNames.concat(classNames.filter(x => !orderedClassNames.includes(x)))
 
-            if (removeDuplicates) {
-                removeDuplicatesFromClassnamesAndWhitespaces(orderedClassNames, whitespaces, headSpace, tailSpace)
-            }
+            removeDuplicatesFromClassnamesAndWhitespaces(orderedClassNames, whitespaces, headSpace, tailSpace);
 
             // Generates the validated/sorted attribute value
             let validatedClassNamesValue = ''

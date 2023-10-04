@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
 function removeDuplicatesFromArray(arr) {
-  return [...new Set(arr)];
+  return [...new Set(arr)]
 }
 
-module.exports = removeDuplicatesFromArray;
+module.exports = removeDuplicatesFromArray

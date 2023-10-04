@@ -2,21 +2,21 @@
  * @fileoverview Utility functions for AST
  */
 
-'use strict';
+'use strict'
 
-const { separatorRegEx } = require('./regex');
+const { separatorRegEx } = require('./regex')
 // context.parserPath
 // /.../eslint-plugin-tailwindcss/node_modules/espree/espree.js
 // /.../eslint-plugin-tailwindcss/node_modules/@angular-eslint/template-parser/dist/index.js
 
-const removeDuplicatesFromArray = require('./removeDuplicatesFromArray');
+const removeDuplicatesFromArray = require('./removeDuplicatesFromArray')
 
 function calleeToString(calleeNode) {
   if (calleeNode.type === 'Identifier') {
-    return calleeNode.name;
+    return calleeNode.name
   }
   if (calleeNode.type === 'MemberExpression') {
-    return `${calleeNode.object.name}.${calleeNode.property.name}`;
+    return `${calleeNode.object.name}.${calleeNode.property.name}`
   }
 }
 
@@ -29,17 +29,17 @@ function calleeToString(calleeNode) {
  */
 function isClassAttribute(node, classRegex) {
   if (!node.name) {
-    return false;
+    return false
   }
-  let name = '';
+  let name = ''
   switch (node.type) {
     case 'TextAttribute':
-      name = node.name;
-      break;
+      name = node.name
+      break
     default:
-      name = node.name.name;
+      name = node.name.name
   }
-  return new RegExp(classRegex).test(name);
+  return new RegExp(classRegex).test(name)
 }
 
 /**
@@ -50,12 +50,12 @@ function isClassAttribute(node, classRegex) {
  * @returns {Boolean}
  */
 function isVueClassAttribute(node, classRegex) {
-  const re = new RegExp(classRegex);
-  let name = '';
+  const re = new RegExp(classRegex)
+  let name = ''
   switch (true) {
     case node.key && node.key.name && re.test(node.key.name):
       // class="vue-classes-as-litteral"
-      return true;
+      return true
     case node.key &&
       node.key.name &&
       node.key.name.name &&
@@ -65,9 +65,9 @@ function isVueClassAttribute(node, classRegex) {
       re.test(node.key.argument.name):
       // v-bind:class="vue-classes-as-bind"
       // :class="vue-classes-as-bind"
-      return true;
+      return true
     default:
-      return false;
+      return false
   }
 }
 
@@ -78,7 +78,7 @@ function isVueClassAttribute(node, classRegex) {
  * @returns {Boolean}
  */
 function isVLiteralValue(node) {
-  return node.value && node.value.type === 'VLiteral';
+  return node.value && node.value.type === 'VLiteral'
 }
 
 /**
@@ -88,7 +88,7 @@ function isVLiteralValue(node) {
  * @returns {Boolean}
  */
 function isArrayExpression(node) {
-  return node.value && node.value.type === 'VExpressionContainer' && node.value.expression.type === 'ArrayExpression';
+  return node.value && node.value.type === 'VExpressionContainer' && node.value.expression.type === 'ArrayExpression'
 }
 
 /**
@@ -98,7 +98,7 @@ function isArrayExpression(node) {
  * @returns {Boolean}
  */
 function isObjectExpression(node) {
-  return node.value && node.value.type === 'VExpressionContainer' && node.value.expression.type === 'ObjectExpression';
+  return node.value && node.value.type === 'VExpressionContainer' && node.value.expression.type === 'ObjectExpression'
 }
 
 /**
@@ -112,10 +112,9 @@ function isVueValidAttributeValue(node) {
     case isVLiteralValue(node): // Simple string
     case isArrayExpression(node): // ['tw-unknown-class']
     case isObjectExpression(node): // {'tw-unknown-class': true}
-      return true;
-      break;
+      return true
     default:
-      return false;
+      return false
   }
 }
 
@@ -127,19 +126,19 @@ function isVueValidAttributeValue(node) {
  */
 function isLiteralAttributeValue(node) {
   if (node.type === 'TextAttribute' && node.name === 'class' && typeof node.value === 'string') {
-    return true;
+    return true
   }
   if (node.value) {
     switch (node.value.type) {
       case 'Literal':
         // No support for dynamic or conditional...
-        return !/\{|\?|\}/.test(node.value.value);
+        return !/\{|\?|\}/.test(node.value.value)
       case 'JSXExpressionContainer':
         // className={"..."}
-        return node.value.expression.type === 'Literal';
+        return node.value.expression.type === 'Literal'
     }
   }
-  return false;
+  return false
 }
 
 /**
@@ -152,13 +151,13 @@ function isLiteralAttributeValue(node) {
 function isValidJSXAttribute(node, classRegex) {
   if (!isClassAttribute(node, classRegex)) {
     // Only run for class[Name] attributes
-    return false;
+    return false
   }
   if (!isLiteralAttributeValue(node)) {
     // No support for dynamic or conditional classnames
-    return false;
+    return false
   }
-  return true;
+  return true
 }
 
 /**
@@ -171,67 +170,65 @@ function isValidJSXAttribute(node, classRegex) {
 function isValidVueAttribute(node, classRegex) {
   if (!isVueClassAttribute(node, classRegex)) {
     // Only run for class attributes
-    return false;
+    return false
   }
   if (!isVueValidAttributeValue(node)) {
     // No support for dynamic or conditional classnames
-    return false;
+    return false
   }
-  return true;
+  return true
 }
 
 function extractRangeFromNode(node) {
   if (node.type === 'TextAttribute' && node.name === 'class') {
-    return [node.valueSpan.fullStart.offset, node.valueSpan.end.offset];
+    return [node.valueSpan.fullStart.offset, node.valueSpan.end.offset]
   }
   switch (node.value.type) {
     case 'JSXExpressionContainer':
-      return node.value.expression.range;
+      return node.value.expression.range
     default:
-      return node.value.range;
+      return node.value.range
   }
 }
 
 function extractValueFromNode(node) {
   if (node.type === 'TextAttribute' && node.name === 'class') {
-    return node.value;
+    return node.value
   }
   switch (node.value.type) {
     case 'JSXExpressionContainer':
-      return node.value.expression.value;
+      return node.value.expression.value
     case 'VExpressionContainer':
       switch (node.value.expression.type) {
         case 'ArrayExpression':
-          return node.value.expression.elements;
-          break;
+          return node.value.expression.elements
         case 'ObjectExpression':
-          return node.value.expression.properties;
-          break;
+          return node.value.expression.properties
       }
-      return node.value.expression.value;
+      return node.value.expression.value
     default:
-      return node.value.value;
+      return node.value.value
   }
 }
 
 function extractClassnamesFromValue(classStr) {
   if (typeof classStr !== 'string') {
-    return { classNames: [], whitespaces: [], headSpace: false, tailSpace: false };
+    return { classNames: [], whitespaces: [], headSpace: false, tailSpace: false }
   }
-  let parts = classStr.split(separatorRegEx);
+  let parts = classStr.split(separatorRegEx)
   if (parts[0] === '') {
-    parts.shift();
+    parts.shift()
   }
   if (parts[parts.length - 1] === '') {
-    parts.pop();
+    parts.pop()
   }
-  let headSpace = separatorRegEx.test(parts[0]);
-  let tailSpace = separatorRegEx.test(parts[parts.length - 1]);
-  const isClass = (_, i) => (headSpace ? i % 2 !== 0 : i % 2 === 0);
-  const isNotClass = (_, i) => (headSpace ? i % 2 === 0 : i % 2 !== 0);
-  let classNames = parts.filter(isClass);
-  let whitespaces = parts.filter(isNotClass);
-  return { classNames: classNames, whitespaces: whitespaces, headSpace: headSpace, tailSpace: tailSpace };
+  let headSpace = separatorRegEx.test(parts[0])
+  let tailSpace = separatorRegEx.test(parts[parts.length - 1])
+  const isClass = (_, i) => (headSpace ? i % 2 !== 0 : i % 2 === 0)
+  const isNotClass = (_, i) => (headSpace ? i % 2 === 0 : i % 2 !== 0)
+  let classNames = parts.filter(isClass)
+  let whitespaces = parts.filter(isNotClass)
+  return { classNames: classNames, whitespaces: whitespaces, headSpace: headSpace, tailSpace: tailSpace }
 }
 
 /**
@@ -247,56 +244,56 @@ function extractClassnamesFromValue(classStr) {
  */
 function parseNodeRecursive(rootNode, childNode, cb, skipConditional = false, isolate = false, ignoredKeys = []) {
   // TODO allow vue non litteral
-  let originalClassNamesValue;
-  let classNames;
+  let originalClassNamesValue
+  let classNames
   if (childNode === null) {
     originalClassNamesValue = extractValueFromNode(rootNode);
-    ({ classNames } = extractClassnamesFromValue(originalClassNamesValue));
-    classNames = removeDuplicatesFromArray(classNames);
+    ({ classNames } = extractClassnamesFromValue(originalClassNamesValue))
+    classNames = removeDuplicatesFromArray(classNames)
     if (classNames.length === 0) {
       // Don't run for empty className
-      return;
+      return
     }
-    cb(classNames, rootNode);
+    cb(classNames, rootNode)
   } else if (childNode === undefined) {
     // Ignore invalid child candidates (probably inside complex TemplateLiteral)
-    return;
+    return
   } else {
-    const forceIsolation = skipConditional ? true : isolate;
-    let trim = false;
+    const forceIsolation = skipConditional ? true : isolate
+    let trim = false
     switch (childNode.type) {
       case 'TemplateLiteral':
         childNode.expressions.forEach((exp) => {
-          parseNodeRecursive(rootNode, exp, cb, skipConditional, forceIsolation, ignoredKeys);
-        });
+          parseNodeRecursive(rootNode, exp, cb, skipConditional, forceIsolation, ignoredKeys)
+        })
         childNode.quasis.forEach((quasis) => {
-          parseNodeRecursive(rootNode, quasis, cb, skipConditional, isolate, ignoredKeys);
-        });
-        return;
+          parseNodeRecursive(rootNode, quasis, cb, skipConditional, isolate, ignoredKeys)
+        })
+        return
       case 'ConditionalExpression':
-        parseNodeRecursive(rootNode, childNode.consequent, cb, skipConditional, forceIsolation, ignoredKeys);
-        parseNodeRecursive(rootNode, childNode.alternate, cb, skipConditional, forceIsolation, ignoredKeys);
-        return;
+        parseNodeRecursive(rootNode, childNode.consequent, cb, skipConditional, forceIsolation, ignoredKeys)
+        parseNodeRecursive(rootNode, childNode.alternate, cb, skipConditional, forceIsolation, ignoredKeys)
+        return
       case 'LogicalExpression':
-        parseNodeRecursive(rootNode, childNode.right, cb, skipConditional, forceIsolation, ignoredKeys);
-        return;
+        parseNodeRecursive(rootNode, childNode.right, cb, skipConditional, forceIsolation, ignoredKeys)
+        return
       case 'ArrayExpression':
         childNode.elements.forEach((el) => {
-          parseNodeRecursive(rootNode, el, cb, skipConditional, forceIsolation, ignoredKeys);
-        });
-        return;
+          parseNodeRecursive(rootNode, el, cb, skipConditional, forceIsolation, ignoredKeys)
+        })
+        return
       case 'ObjectExpression':
         childNode.properties.forEach((prop) => {
-          const isUsedByClassNamesPlugin = rootNode.callee && rootNode.callee.name === 'classnames';
+          const isUsedByClassNamesPlugin = rootNode.callee && rootNode.callee.name === 'classnames'
 
           if (prop.type === 'SpreadElement') {
             // Ignore spread elements
-            return;
+            return
           }
 
           if (prop.key.type === 'Identifier' && ignoredKeys.includes(prop.key.name)) {
             // Ignore specific keys defined in settings
-            return;
+            return
           }
 
           parseNodeRecursive(
@@ -306,53 +303,53 @@ function parseNodeRecursive(rootNode, childNode, cb, skipConditional = false, is
             skipConditional,
             forceIsolation,
             ignoredKeys
-          );
-        });
-        return;
+          )
+        })
+        return
       case 'Property':
-        parseNodeRecursive(rootNode, childNode.key, cb, skipConditional, forceIsolation, ignoredKeys);
-        return;
+        parseNodeRecursive(rootNode, childNode.key, cb, skipConditional, forceIsolation, ignoredKeys)
+        return
       case 'Literal':
-        trim = true;
-        originalClassNamesValue = childNode.value;
-        break;
+        trim = true
+        originalClassNamesValue = childNode.value
+        break
       case 'TemplateElement':
-        originalClassNamesValue = childNode.value.raw;
-        break;
+        originalClassNamesValue = childNode.value.raw
+        break
     }
-    ({ classNames } = extractClassnamesFromValue(originalClassNamesValue));
-    classNames = removeDuplicatesFromArray(classNames);
+    ({ classNames } = extractClassnamesFromValue(originalClassNamesValue))
+    classNames = removeDuplicatesFromArray(classNames)
     if (classNames.length === 0) {
       // Don't run for empty className
-      return;
+      return
     }
-    const targetNode = isolate ? null : rootNode;
-    cb(classNames, targetNode);
+    const targetNode = isolate ? null : rootNode
+    cb(classNames, targetNode)
   }
 }
 
 function getTemplateElementPrefix(text, raw) {
-  const idx = text.indexOf(raw);
+  const idx = text.indexOf(raw)
   if (idx === 0) {
-    return '';
+    return ''
   }
-  return text.split(raw).shift();
+  return text.split(raw).shift()
 }
 
 function getTemplateElementSuffix(text, raw) {
   if (text.indexOf(raw) === -1) {
-    return '';
+    return ''
   }
-  return text.split(raw).pop();
+  return text.split(raw).pop()
 }
 
 function getTemplateElementBody(text, prefix, suffix) {
-  let arr = text.split(prefix);
-  arr.shift();
-  let body = arr.join(prefix);
-  arr = body.split(suffix);
-  arr.pop();
-  return arr.join(suffix);
+  let arr = text.split(prefix)
+  arr.shift()
+  let body = arr.join(prefix)
+  arr = body.split(suffix)
+  arr.pop()
+  return arr.join(suffix)
 }
 
 module.exports = {
@@ -371,4 +368,4 @@ module.exports = {
   getTemplateElementPrefix,
   getTemplateElementSuffix,
   getTemplateElementBody,
-};
+}

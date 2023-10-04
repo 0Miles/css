@@ -5,12 +5,12 @@
  * @returns {string}
  */
 function escapeRegex(input) {
-  return input.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
+  return input.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
-const separatorRegEx = /([\t\n\f\r ]+)/;
+const separatorRegEx = /([\t\n\f\r ]+)/
 
 module.exports = {
   escapeRegex,
   separatorRegEx,
-};
+}
