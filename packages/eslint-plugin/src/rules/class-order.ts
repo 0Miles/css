@@ -2,8 +2,8 @@
 import * as astUtil from '../utils/ast'
 import defineVisitors from '../utils/define-visitors'
 import resolveContext from '../utils/resolve-context'
-import { reorderForReadableClasses } from '@master/css'
 import { Rule } from 'eslint'
+import { syncAction } from './_'
 
 export default {
     meta: {
@@ -143,8 +143,7 @@ export default {
                 return
             }
 
-            let orderedClassNames = reorderForReadableClasses(classNames, config)
-                .filter(eachOrderedClassName => classNames.includes(eachOrderedClassName))
+            let orderedClassNames = syncAction('sort', classNames, config)
 
             orderedClassNames = classNames.filter(x => !orderedClassNames.includes(x))
                 .concat(orderedClassNames)

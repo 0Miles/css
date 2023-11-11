@@ -1,8 +1,8 @@
 import * as astUtil from '../utils/ast'
 import defineVisitors from '../utils/define-visitors'
 import resolveContext from '../utils/resolve-context'
-import { validate } from '@master/css-validator'
 import { Rule } from 'eslint'
+import { syncAction } from './_'
 
 export default {
     meta: {
@@ -51,7 +51,7 @@ export default {
                     const nodeStartLine = node.loc.start.line
                     const nodeEndLine = node.loc.end.line
                     for (const className of classNames) {
-                        const { isMasterCSS, errors } = validate(className, { config })
+                        const { isMasterCSS, errors } = syncAction('validate', className, config)
                         if (errors.length > 0) {
                             for (const error of errors) {
                                 if (isMasterCSS) {

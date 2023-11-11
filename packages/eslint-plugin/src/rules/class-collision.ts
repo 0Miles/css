@@ -2,8 +2,8 @@ import * as astUtil from '../utils/ast'
 import areDeclarationsEqual from '../utils/are-declarations-equal'
 import defineVisitors from '../utils/define-visitors'
 import resolveContext from '../utils/resolve-context'
-import { createValidRules } from '@master/css-validator'
 import { Rule } from 'eslint'
+import { syncAction } from './_'
 
 export default {
     meta: {
@@ -50,11 +50,7 @@ export default {
                     const sourceCodeLines = sourceCode.lines
                     const nodeStartLine = node.loc.start.line
                     const nodeEndLine = node.loc.end.line
-                    const ruleOfClass = {}
-                    classNames
-                        .forEach(eachClassName => {
-                            ruleOfClass[eachClassName] = createValidRules(eachClassName, { config })[0]
-                        })
+                    const ruleOfClass = syncAction('ruleOfClass', classNames, config)
 
                     for (let i = 0; i < classNames.length; i++) {
                         const className = classNames[i]
