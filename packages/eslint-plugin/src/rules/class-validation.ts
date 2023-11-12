@@ -2,7 +2,7 @@ import * as astUtil from '../utils/ast'
 import defineVisitors from '../utils/define-visitors'
 import resolveContext from '../utils/resolve-context'
 import { Rule } from 'eslint'
-import { syncAction } from './_'
+import heavyAction from '../utils/heavy-action'
 
 export default {
     meta: {
@@ -40,7 +40,7 @@ export default {
         ],
     },
     create: function (context) {
-        const { options, settings, config } = resolveContext(context)
+        const { options, settings } = resolveContext(context)
         const visitNode = (node, arg = null) => {
             astUtil.parseNodeRecursive(
                 node,
@@ -51,7 +51,7 @@ export default {
                     const nodeStartLine = node.loc.start.line
                     const nodeEndLine = node.loc.end.line
                     for (const className of classNames) {
-                        const { isMasterCSS, errors } = syncAction('validate', className, config)
+                        const { isMasterCSS, errors } = heavyAction('validate', className, settings.config)
                         if (errors.length > 0) {
                             for (const error of errors) {
                                 if (isMasterCSS) {

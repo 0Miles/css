@@ -3,7 +3,7 @@ import * as astUtil from '../utils/ast'
 import defineVisitors from '../utils/define-visitors'
 import resolveContext from '../utils/resolve-context'
 import { Rule } from 'eslint'
-import { syncAction } from './_'
+import heavyAction from '../utils/heavy-action'
 
 export default {
     meta: {
@@ -40,7 +40,7 @@ export default {
         ],
     },
     create: function (context) {
-        const { options, settings, config } = resolveContext(context)
+        const { options, settings } = resolveContext(context)
         const sourceCode = context.sourceCode
 
         const visitNode = (node, arg = null) => {
@@ -143,7 +143,7 @@ export default {
                 return
             }
 
-            let orderedClassNames = syncAction('sort', classNames, config)
+            let orderedClassNames = heavyAction('sort', classNames, settings.config)
 
             orderedClassNames = classNames.filter(x => !orderedClassNames.includes(x))
                 .concat(orderedClassNames)

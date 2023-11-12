@@ -3,7 +3,7 @@ import areDeclarationsEqual from '../utils/are-declarations-equal'
 import defineVisitors from '../utils/define-visitors'
 import resolveContext from '../utils/resolve-context'
 import { Rule } from 'eslint'
-import { syncAction } from './_'
+import heavyAction from '../utils/heavy-action'
 
 export default {
     meta: {
@@ -40,7 +40,7 @@ export default {
         ],
     },
     create(context) {
-        const { options, settings, config } = resolveContext(context)
+        const { options, settings } = resolveContext(context)
         const visitNode = (node, arg = null) => {
             astUtil.parseNodeRecursive(
                 node,
@@ -50,13 +50,11 @@ export default {
                     const sourceCodeLines = sourceCode.lines
                     const nodeStartLine = node.loc.start.line
                     const nodeEndLine = node.loc.end.line
-                    const ruleOfClass = syncAction('ruleOfClass', classNames, config)
-
+                    const ruleOfClass = heavyAction('collision', classNames, settings.config)
                     for (let i = 0; i < classNames.length; i++) {
                         const className = classNames[i]
                         const rule = ruleOfClass[className]
                         const conflicts = []
-
                         if (rule) {
                             for (let j = 0; j < classNames.length; j++) {
                                 const compareClassName = classNames[j]
