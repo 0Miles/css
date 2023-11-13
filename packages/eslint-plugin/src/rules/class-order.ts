@@ -2,7 +2,6 @@
 import defineVisitors from '../utils/define-visitors'
 import resolveContext from '../utils/resolve-context'
 import { Rule } from 'eslint'
-import heavyAction from '../utils/heavy-action'
 import getTemplateElementBody from '../utils/get-template-element-body'
 import getTemplateElementSuffix from '../utils/get-template-element-suffix'
 import getTemplateElementPrefix from '../utils/get-template-element-prefix'
@@ -10,6 +9,7 @@ import extractValueFromNode from '../utils/extract-value-from-node'
 import extractRangeFromNode from '../utils/extract-range-from-node'
 import extractClassnamesFromValue from '../utils/extract-classnames-from-value'
 import findLoc from '../utils/find-loc'
+import reorderValidClassesAction from '../utils/reorder-valid-classes-action'
 
 export default {
     meta: {
@@ -149,7 +149,7 @@ export default {
                 return
             }
 
-            let orderedClassNames = heavyAction('sort', classNames, settings.config)
+            let orderedClassNames = reorderValidClassesAction(classNames, settings.config)
 
             orderedClassNames = classNames.filter(x => !orderedClassNames.includes(x))
                 .concat(orderedClassNames)

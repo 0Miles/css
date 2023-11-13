@@ -1,9 +1,9 @@
 import defineVisitors from '../utils/define-visitors'
 import resolveContext from '../utils/resolve-context'
 import { Rule } from 'eslint'
-import heavyAction from '../utils/heavy-action'
 import findLoc from '../utils/find-loc'
 import { parseNodeRecursive } from '../utils/parse-node-recursive'
+import validateAction from '../utils/validate-action'
 
 export default {
     meta: {
@@ -52,7 +52,7 @@ export default {
                     const nodeStartLine = node.loc.start.line
                     const nodeEndLine = node.loc.end.line
                     for (const className of classNames) {
-                        const { isMasterCSS, errors } = heavyAction('validate', className, settings.config)
+                        const { isMasterCSS, errors } = validateAction(className, settings.config)
                         if (errors.length > 0) {
                             for (const error of errors) {
                                 if (isMasterCSS) {

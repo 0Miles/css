@@ -2,9 +2,9 @@ import areDeclarationsEqual from '../utils/are-declarations-equal'
 import defineVisitors from '../utils/define-visitors'
 import resolveContext from '../utils/resolve-context'
 import { Rule } from 'eslint'
-import heavyAction from '../utils/heavy-action'
 import findLoc from '../utils/find-loc'
 import { parseNodeRecursive } from '../utils/parse-node-recursive'
+import validRulesAction from '../utils/valid-rules-action'
 
 export default {
     meta: {
@@ -51,7 +51,7 @@ export default {
                     const sourceCodeLines = sourceCode.lines
                     const nodeStartLine = node.loc.start.line
                     const nodeEndLine = node.loc.end.line
-                    const ruleOfClass = heavyAction('collision', classNames, settings.config)
+                    const ruleOfClass = validRulesAction(classNames, settings.config)
                     for (let i = 0; i < classNames.length; i++) {
                         const className = classNames[i]
                         const rule = ruleOfClass[className]
