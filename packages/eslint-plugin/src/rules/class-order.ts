@@ -1,9 +1,15 @@
 /* eslint-disable no-case-declarations */
-import * as astUtil from '../utils/ast'
 import defineVisitors from '../utils/define-visitors'
 import resolveContext from '../utils/resolve-context'
 import { Rule } from 'eslint'
 import heavyAction from '../utils/heavy-action'
+import getTemplateElementBody from '../utils/get-template-element-body'
+import getTemplateElementSuffix from '../utils/get-template-element-suffix'
+import getTemplateElementPrefix from '../utils/get-template-element-prefix'
+import extractValueFromNode from '../utils/extract-value-from-node'
+import extractRangeFromNode from '../utils/extract-range-from-node'
+import extractClassnamesFromValue from '../utils/extract-classnames-from-value'
+import findLoc from '../utils/find-loc'
 
 export default {
     meta: {
@@ -53,8 +59,8 @@ export default {
             let expStrings = []
 
             if (arg === null) {
-                originalClassNamesValue = astUtil.extractValueFromNode(node)
-                const range = astUtil.extractRangeFromNode(node)
+                originalClassNamesValue = extractValueFromNode(node)
+                const range = extractRangeFromNode(node)
                 if (node.type === 'TextAttribute') {
                     start = range[0]
                     end = range[1]
@@ -128,15 +134,15 @@ export default {
                         // start/end does not include the backticks, therefore it matches value.raw.
                         const txt = context.sourceCode.getText(arg)
 
-                        prefix = astUtil.getTemplateElementPrefix(txt, originalClassNamesValue)
-                        suffix = astUtil.getTemplateElementSuffix(txt, originalClassNamesValue)
-                        originalClassNamesValue = astUtil.getTemplateElementBody(txt, prefix, suffix)
+                        prefix = getTemplateElementPrefix(txt, originalClassNamesValue)
+                        suffix = getTemplateElementSuffix(txt, originalClassNamesValue)
+                        originalClassNamesValue = getTemplateElementBody(txt, prefix, suffix)
                         break
                 }
             }
 
             const { classNames, whitespaces, headSpace, tailSpace } =
-                astUtil.extractClassnamesFromValue(originalClassNamesValue)
+                extractClassnamesFromValue(originalClassNamesValue)
 
             if (classNames.length <= 1) {
                 // Don't run sorting for a single or empty className
@@ -177,7 +183,7 @@ export default {
                 const nodeStartLine = node.loc.start.line
                 const nodeEndLine = node.loc.end.line
                 const descriptor = {
-                    loc: astUtil.findLoc(originalClassNamesValue, sourceCodeLines, nodeStartLine, nodeEndLine),
+                    loc: findLoc(originalClassNamesValue, sourceCodeLines, nodeStartLine, nodeEndLine),
                     messageId: 'invalidClassOrder',
                     fix: function (fixer) {
                         return fixer.replaceTextRange([start, end], validatedClassNamesValue)

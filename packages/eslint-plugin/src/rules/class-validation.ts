@@ -1,8 +1,9 @@
-import * as astUtil from '../utils/ast'
 import defineVisitors from '../utils/define-visitors'
 import resolveContext from '../utils/resolve-context'
 import { Rule } from 'eslint'
 import heavyAction from '../utils/heavy-action'
+import findLoc from '../utils/find-loc'
+import { parseNodeRecursive } from '../utils/parse-node-recursive'
 
 export default {
     meta: {
@@ -42,7 +43,7 @@ export default {
     create: function (context) {
         const { options, settings } = resolveContext(context)
         const visitNode = (node, arg = null) => {
-            astUtil.parseNodeRecursive(
+            parseNodeRecursive(
                 node,
                 arg,
                 (classNames, node) => {
@@ -56,7 +57,7 @@ export default {
                             for (const error of errors) {
                                 if (isMasterCSS) {
                                     context.report({
-                                        loc: astUtil.findLoc(className, sourceCodeLines, nodeStartLine, nodeEndLine),
+                                        loc: findLoc(className, sourceCodeLines, nodeStartLine, nodeEndLine),
                                         messageId: 'invalidClass',
                                         data: {
                                             message: error.message + '.',
@@ -64,7 +65,7 @@ export default {
                                     })
                                 } else if (options.disallowUnknownClass) {
                                     context.report({
-                                        loc: astUtil.findLoc(className, sourceCodeLines, nodeStartLine, nodeEndLine),
+                                        loc: findLoc(className, sourceCodeLines, nodeStartLine, nodeEndLine),
                                         messageId: 'disallowUnknownClass',
                                         data: {
                                             message: `"${className}" is not a valid or known class.`

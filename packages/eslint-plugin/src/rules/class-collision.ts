@@ -1,9 +1,10 @@
-import * as astUtil from '../utils/ast'
 import areDeclarationsEqual from '../utils/are-declarations-equal'
 import defineVisitors from '../utils/define-visitors'
 import resolveContext from '../utils/resolve-context'
 import { Rule } from 'eslint'
 import heavyAction from '../utils/heavy-action'
+import findLoc from '../utils/find-loc'
+import { parseNodeRecursive } from '../utils/parse-node-recursive'
 
 export default {
     meta: {
@@ -42,7 +43,7 @@ export default {
     create(context) {
         const { options, settings } = resolveContext(context)
         const visitNode = (node, arg = null) => {
-            astUtil.parseNodeRecursive(
+            parseNodeRecursive(
                 node,
                 arg,
                 (classNames, node, originalClassNamesValue, start, end) => {
@@ -77,7 +78,7 @@ export default {
                                 fixClassNames = fixClassNames.replace(new RegExp(`\\s+${regexSafe}|${regexSafe}\\s+`), '')
                             }
                             context.report({
-                                loc: astUtil.findLoc(className, sourceCodeLines, nodeStartLine, nodeEndLine),
+                                loc: findLoc(className, sourceCodeLines, nodeStartLine, nodeEndLine),
                                 messageId: 'collisionClass',
                                 data: {
                                     message: `"${className}" applies the same CSS declarations as ${conflictClassNamesMsg}.`,
