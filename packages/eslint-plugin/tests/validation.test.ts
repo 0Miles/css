@@ -11,6 +11,14 @@ new RuleTester({
     valid: [
         {
             code: `<div class="bg:black f:24 fg:white m:8 p:8">Simple, basic</div>`,
+        },
+        {
+            code: `<path style="fill: #FFFFFF">path</path>`,
+        },
+        {
+            code: `<div ref="loginBox":class="[\`r:\${cssCalculate(20, 200)}vw\`, verificationCodeBoxDisplay ? 'max-h:585' : 'max-h:485']">Vue template</div>`,
+            filename: 'test.vue',
+            parser: require.resolve('vue-eslint-parser')
         }
     ],
     invalid: [
@@ -70,7 +78,18 @@ new RuleTester({
         }
     }
 }).run('invalid', rule, {
-    valid: [],
+    valid: [
+        {
+            code: `<div :class="[\`r:\${cssCalculate(20, 200)}vw\`]">Vue template</div>`,
+            filename: 'test.vue',
+            parser: require.resolve('vue-eslint-parser'),
+            options: [
+                {
+                    disallowUnknownClass: true
+                }
+            ]
+        }
+    ],
     invalid: [
         {
             code: `<div class="btn rrr bg:black m:mistake">Simple, basic</div>`,
@@ -98,6 +117,6 @@ new RuleTester({
                     disallowUnknownClass: true
                 }
             ]
-        },
+        }
     ],
 })
